@@ -1,4 +1,5 @@
 const express = require('express')
+const userList = require('./user.json')
 
 const app = express()
 const PORT = process.env.PORT || 3000
