@@ -3,7 +3,6 @@ const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
 
 const userList = require('./user.json').results
-// console.log(userList)
 
 const app = express()
 app.engine('hbs', exphbs.engine({ defaultLayout: 'main', extname: '.hbs' }))
@@ -17,13 +16,16 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   const { email, password } = req.body
-  let userAccount = userList.find(user => user.email === email)
-  let userPassword = userList.find(user => user.password === password)
+  let accountIndex = userList.findIndex(user => user.email === email)
+  let userPassword = Boolean(userList[accountIndex].password === password)
+  const userName = userList[accountIndex].firstName
 
-  if (userAccount && userPassword) {
-    return res.redirect('/homepage')
+  if (accountIndex === -1) {
+    return res.render('not_found')
+  } else if (!userPassword) {
+    return res.render('not_found')
   } else {
-    return res.redirect('/not_found')
+    return res.render('homepage', {userName})
   }
 })
 
